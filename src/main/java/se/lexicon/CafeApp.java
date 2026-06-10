@@ -2,7 +2,7 @@ package se.lexicon;
 
 
 public class CafeApp {
-    static void main() {
+    public static void main(String[] args) {
 
         String item1 = "Espresso", item2 = "Cappuccino", item3 = "Latte", item4 = "Croissant", item5 = "Sandwich";
         int qty = 0;
@@ -31,36 +31,44 @@ public class CafeApp {
             IO.println(String.format("5. %-17s %.2f SEK", item5, price5));
             IO.println("==============================\n");
 
-
-            switch (Integer.parseInt(IO.readln("Enter item number (1-5) "))) {
+            int choice = readInt("Enter item number (1-5) ", 1, 5);
+            switch (choice) {
                 case 1 -> {
-                    qty = Integer.parseInt(IO.readln("How many? "));
+                    qty = readInt("How many? (1-20) ", 1, 20);
                     subTotal += price1 * qty;
                     currItem = item1;
                 }
                 case 2 -> {
-                    qty = Integer.parseInt(IO.readln("How many? "));
+                    qty = readInt("How many? (1-20) ", 1, 20);
                     subTotal += price2 * qty;
                     currItem = item2;
                 }
                 case 3 -> {
-                    qty = Integer.parseInt(IO.readln("How many? "));
+                    qty = readInt("How many? (1-20) ", 1, 20);
                     subTotal += price3 * qty;
                     currItem = item3;
                 }
                 case 4 -> {
-                    qty = Integer.parseInt(IO.readln("How many? "));
+                    qty = readInt("How many? (1-20) ", 1, 20);
                     subTotal += price4 * qty;
                     currItem = item4;
                 }
                 case 5 -> {
-                    qty = Integer.parseInt(IO.readln("How many? "));
+                    qty = readInt("How many? (1-20) ", 1, 20);
                     subTotal += price5 * qty;
                     currItem = item5;
                 }
-                default -> IO.println("Invalid input!");
             }
-            String memberQuestion = IO.readln("Loyalty member? (yes/no) ");
+            String memberQuestion = "";
+            boolean validAns = false;
+            while (!validAns) {
+                memberQuestion = IO.readln("Loyalty member? (yes/no): ");
+                if (memberQuestion.equalsIgnoreCase("yes") || memberQuestion.equalsIgnoreCase("no")) {
+                    validAns = true;
+                } else  {
+                    IO.println("Please answer yes or no: ");
+                }
+            }
             if (memberQuestion.equalsIgnoreCase("yes")) {
                 IO.println("==============================\n        Lexicon Cafe\n==============================");
                 IO.println("Customer:    " + customerName);
@@ -95,4 +103,21 @@ public class CafeApp {
             totalCustomers++;
         }
     }
+
+    static int readInt(String prompt, int min, int max) {
+        int value = -1;
+        while (value < min || value > max) {
+            try {
+                value = Integer.parseInt(IO.readln(prompt));
+                if (value < min || value > max) {
+                    IO.println("Invalid input, please enter a number between " + min + " and " + max + ".");
+                }
+            } catch (NumberFormatException e) {
+                IO.println("Please enter a valid number.");
+            }
+        }
+        return value;
+    }
+
 }
+
