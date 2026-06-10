@@ -8,11 +8,11 @@ public class CafeApp {
     private static final String[] ITEM_NAMES = {"Espresso", "Cappuccino", "Latte", "Croissant", "Sandwich"};
     private static final double[] ITEM_PRICES = {25.00, 35.00, 40.00, 30.00, 55.00};
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
 
         // List of orders for summary
         ArrayList<Order> orders = new ArrayList<>();
-
+        // order loop
         while (true) {
             String customerName = IO.readln("Next customer name (or 'done' to close): ");
 
@@ -22,12 +22,21 @@ public class CafeApp {
 
             IO.println("Hi " + customerName + "! " + "Here is our menu:");
             printMenu();
-
-            int choice = readInt("Enter item number (1-5) ", 1, 5);
-            int qty = readInt("How many? (1-20) ", 1, 20);
             boolean isMember = readYesNo("Loyalty member? (yes/no): ").equalsIgnoreCase("yes");
+            Order order = new Order(isMember, customerName);
 
-            Order order = new Order(isMember, ITEM_PRICES[choice - 1], qty, ITEM_NAMES[choice - 1], customerName);
+            // item loop
+            while (true) {
+                int choice = readInt("Enter item number (1-5, or 0 to finish) ", 0, 5);
+                if (choice == 0){
+                    break;
+                }
+
+                int qty = readInt("How many? (1-20) ", 1, 20);
+                order.addItem(ITEM_NAMES[choice - 1], ITEM_PRICES[choice - 1], qty);
+                IO.println(qty + " x " + ITEM_NAMES[choice - 1] + " added");
+            }
+
             order.printReceipt();
             orders.add(order);
         }
@@ -74,7 +83,8 @@ public class CafeApp {
         for (int i = 0; i < ITEM_NAMES.length; i++) {
             IO.println(String.format("%d. %-17s %.2f SEK", i+1, ITEM_NAMES[i], ITEM_PRICES[i]));
         }
-        IO.println("==============================\n");
+        IO.println("==============================");
+        IO.println("Enter 0 to stop ordering\n");
     }
 
     static void printSummary(ArrayList<Order> orders) {

@@ -1,24 +1,23 @@
 package se.lexicon;
 
+import javax.sound.sampled.Line;
+import java.util.ArrayList;
+
 public class Order {
 
     private String customerName;
-    private String itemName;
-    private int quantity;
-    private double itemPrice;
     private boolean isMember;
+    private ArrayList<LineItem> lineItems;
 
     private static final double VAT_RATE = 0.12;
     private static final double MEMBER_DISCOUNT = 0.15;
     private static final double BULK_DISCOUNT = 0.10;
     private static final double BULK_AMOUNT = 150.00;
 
-    public Order(boolean isMember, double itemPrice, int quantity, String itemName, String customerName) {
+    public Order(boolean isMember, String customerName) {
         this.isMember = isMember;
-        this.itemPrice = itemPrice;
-        this.quantity = quantity;
-        this.itemName = itemName;
         this.customerName = customerName;
+        this.lineItems = new ArrayList<>();
     }
 
     public String getCustomerName() {
@@ -26,7 +25,11 @@ public class Order {
     }
 
     public double getSubTotal() {
-        return itemPrice * quantity;
+        double subTotal = 0;
+        for (LineItem li : lineItems) {
+            subTotal += li.lineTotal();
+        }
+        return subTotal;
     }
 
     public double getDiscountRate() {
@@ -60,7 +63,10 @@ public class Order {
         IO.println("        Lexicon Cafe          ");
         IO.println("==============================");
         IO.println("Customer:       " + customerName);
-        IO.println("Item:           " + itemName + " x " + quantity);
+        for (LineItem li : lineItems) {
+            IO.println(String.format("%-17s x %d    %.2f SEK", li.getItemName(), li.getQuantity(), li.getItemPrice()));
+        };
+        IO.println("------------------------------");
         IO.println(String.format("Subtotal:       %.2f SEK", subTotal));
         if (discount > 0) {
             IO.println(String.format("Discount:       -%.2f SEK", discount));
@@ -73,4 +79,9 @@ public class Order {
         IO.println("      See you next time.");
         IO.println("==============================");
     }
+
+    public void addItem(String itemName, double itemPrice, int quantity) {
+        lineItems.add(new LineItem(itemName, itemPrice, quantity));
+    }
+
 }
